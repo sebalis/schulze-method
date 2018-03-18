@@ -8,10 +8,13 @@ from collections import defaultdict
 import itertools
 import unittest
 
-import schulze
+from schulze import Schulze
 
 
 class SchulzeTest(unittest.TestCase):
+    def setUp(self):
+        self.schulze = Schulze()
+
     def _make_ranks(self, names):
         return [[name] for name in names]
 
@@ -25,34 +28,32 @@ class SchulzeTest(unittest.TestCase):
 
     def _compute_d_wikipedia(self):
         """Computes the d array found at http://en.wikipedia.org/wiki/Schulze_method."""
-        d = defaultdict(int)
-
         # 5 people think A > C > B > E > D.
         ranks = self._make_ranks('ACBED')
-        schulze._add_ranks_to_d(d, ranks, 5)
+        self.schulze._add_ranks_to_d(ranks, 5)
         # 5 people think A > D > E > C > B.
         ranks = self._make_ranks('ADECB')
-        schulze._add_ranks_to_d(d, ranks, 5)
+        self.schulze._add_ranks_to_d(ranks, 5)
         # 8 people think B > E > D > A > C.
         ranks = self._make_ranks('BEDAC')
-        schulze._add_ranks_to_d(d, ranks, 8)
+        self.schulze._add_ranks_to_d(ranks, 8)
         # 3 people think C > A > B > E > D.
         ranks = self._make_ranks('CABED')
-        schulze._add_ranks_to_d(d, ranks, 3)
+        self.schulze._add_ranks_to_d(ranks, 3)
         # 7 people think C > A > E > B > D.
         ranks = self._make_ranks('CAEBD')
-        schulze._add_ranks_to_d(d, ranks, 7)
+        self.schulze._add_ranks_to_d(ranks, 7)
         # 2 people think C > B > A > D > E.
         ranks = self._make_ranks('CBADE')
-        schulze._add_ranks_to_d(d, ranks, 2)
+        self.schulze._add_ranks_to_d(ranks, 2)
         # 7 people think D > C > E > B > A.
         ranks = self._make_ranks('DCEBA')
-        schulze._add_ranks_to_d(d, ranks, 7)
+        self.schulze._add_ranks_to_d(ranks, 7)
         # 8 people think E > B > A > D > C.
         ranks = self._make_ranks('EBADC')
-        schulze._add_ranks_to_d(d, ranks, 8)
+        self.schulze._add_ranks_to_d(ranks, 8)
 
-        return d
+        return self.schulze.d
 
     def test_compute_d_wikipedia(self):
         """Tests computing the d array found at http://en.wikipedia.org/wiki/Schulze_method."""
@@ -71,7 +72,7 @@ class SchulzeTest(unittest.TestCase):
         d = self._compute_d_wikipedia()
 
         candidate_names = 'ABCDE'
-        p = schulze._compute_p(d, candidate_names)
+        p = self.schulze._compute_p(candidate_names)
 
         for name in 'ABCDE':
             self.assertNotIn((name, name), p)
@@ -84,8 +85,8 @@ class SchulzeTest(unittest.TestCase):
     def test_rank_p_wikipedia(self):
         d = self._compute_d_wikipedia()
         candidate_names = 'ABCDE'
-        p = schulze._compute_p(d, candidate_names)
-        best = schulze._rank_p(candidate_names, p)
+        p = self.schulze._compute_p(candidate_names)
+        best = self.schulze._rank_p(candidate_names)
 
         expected_best = self._make_ranks('EACBD')
         self.assertSequenceEqual(expected_best, best)
@@ -97,7 +98,7 @@ class SchulzeTest(unittest.TestCase):
         bottom = candidate_names[3:5]
         ranks = [top, middle, bottom]
         weighted_ranks = [(ranks, 10)]
-        best = schulze.compute_ranks(candidate_names, weighted_ranks)
+        best = self.schulze.compute_ranks(candidate_names, weighted_ranks)
 
         expected_best = [['A', 'B'], ['C'], ['D', 'E']]
         self.assertSequenceEqual(expected_best, best)
@@ -106,7 +107,7 @@ class SchulzeTest(unittest.TestCase):
         candidate_names = 'ABCDE'
         ranks = [candidate_names]
         weighted_ranks = [(ranks, 10)]
-        best = schulze.compute_ranks(candidate_names, weighted_ranks)
+        best = self.schulze.compute_ranks(candidate_names, weighted_ranks)
 
         expected_best = [['A', 'B', 'C', 'D', 'E']]
         self.assertSequenceEqual(expected_best, best)
