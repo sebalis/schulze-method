@@ -80,7 +80,7 @@ def _rank_p(candidate_names, p):
 
         candidate_wins[num_wins].append(candidate_name1)
 
-    sorted_wins = sorted(candidate_wins.iterkeys(), reverse=True)
+    sorted_wins = sorted(iter(candidate_wins.keys()), reverse=True)
     return [candidate_wins[num_wins] for num_wins in sorted_wins]
 
 
