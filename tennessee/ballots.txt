@@ -1,0 +1,4 @@
+42| Memphis > Nashville > Chattanooga > Knoxville
+26| Nashville > Chattanooga > Knoxville > Memphis
+15| Chattanooga > Knoxville > Nashville > Memphis
+17| Knoxville > Chattanooga > Nashville > Memphis

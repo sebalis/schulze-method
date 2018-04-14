@@ -91,7 +91,7 @@ class BallotsReader:
         self.candidates = candidates
 
     def _full_ranking_match(self, line):
-        self.match = re.fullmatch("\\s*(?P<number>[1-9][0-9]*)\\s*[|]\\s*(?P<names>.+?(\\s*[>=]\\s*.+?)*)\\s*", line)
+        self.match = re.fullmatch("(\\s*(?P<number>[1-9][0-9]*)\\s*[|])?\\s*(?P<names>.+?(\\s*[>=]\\s*.+?)*)\\s*", line)
         return self.match
 
     def _single_ranking_match(self, line):
@@ -130,7 +130,7 @@ class BallotsReader:
         self.line_no += 1
         if len(line) > 0:
             if self.ranking == None and self._full_ranking_match(line):
-                weight = int(self.match.group("number"))
+                weight = int(self.match.group("number") or 1)
                 ballot = self._split_names(self.match.group("names"), "\\s*>\\s*", "\\s*=\\s*", [])
                 self.ballots.append((ballot, weight))
             elif self._single_ranking_match(line):
