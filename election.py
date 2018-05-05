@@ -175,8 +175,7 @@ with result_file:
     with ballots_file:
         ballots = BallotsReader(ballots_file, result_file, candidates).read()
 
-    schulze = Schulze()
-    schulze.compute_ranks(candidates, ballots)
+    schulze = Schulze(ballots, candidates)
 
     output_result(result_file, schulze, ballots, candidates)
 
